@@ -108,19 +108,11 @@ public class UserServiceImpl implements UserService {
         log.info("Successfully deleted user with ID: {}", id);
     }
 
-    // --- Private Helper Methods ---
-
-    /**
-     * Helper to find user by ID or throw a standard exception.
-     */
     private User findUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
-    /**
-     * Helper to map a User entity to a UserResponse DTO.
-     */
     private UserResponse convertToUserResponse(User user) {
         return new UserResponse(
                 user.getId(),

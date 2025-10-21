@@ -1,0 +1,73 @@
+package com.miftah.pengaduan_masyarakat.controller;
+
+import com.miftah.pengaduan_masyarakat.dto.UserRequest;
+import com.miftah.pengaduan_masyarakat.dto.UserResponse;
+import com.miftah.pengaduan_masyarakat.service.UserService;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/users")
+@Slf4j
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
+        log.info("Received request to create user with username: {}", request.getUsername());
+        UserResponse createdUser = userService.createUser(request);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(createdUser);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        log.info("Received request to fetch all users");
+
+        List<UserResponse> users = userService.getAllUsers();
+
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
+        log.info("Received request to fetch user with ID: {}", id);
+
+        UserResponse user = userService.getUserById(id);
+
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
+        log.info("Received request to update user with ID: {}", id);
+
+        UserResponse updatedUser = userService.updateUser(id, request);
+
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        log.info("Received request to delete user with ID: {}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+}
