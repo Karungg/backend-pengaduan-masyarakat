@@ -1,5 +1,6 @@
 package com.miftah.pengaduan_masyarakat.controller;
 
+import com.miftah.pengaduan_masyarakat.dto.GenericResponse;
 import com.miftah.pengaduan_masyarakat.dto.UserRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.service.UserService;
@@ -24,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<GenericResponse<UserResponse>> createUser(@Valid @RequestBody UserRequest request) {
         log.info("Received request to create user with username: {}", request.getUsername());
         UserResponse createdUser = userService.createUser(request);
 
@@ -34,40 +35,43 @@ public class UserController {
                 .buildAndExpand(createdUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(createdUser);
+        return ResponseEntity.created(location)
+                .body(GenericResponse.created(createdUser));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
+    public ResponseEntity<GenericResponse<List<UserResponse>>> getAllUsers() {
         log.info("Received request to fetch all users");
 
         List<UserResponse> users = userService.getAllUsers();
 
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(GenericResponse.ok(users));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable UUID id) {
+    public ResponseEntity<GenericResponse<UserResponse>> getUserById(@PathVariable UUID id) {
         log.info("Received request to fetch user with ID: {}", id);
 
         UserResponse user = userService.getUserById(id);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(GenericResponse.ok(user));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
+    public ResponseEntity<GenericResponse<UserResponse>> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
         log.info("Received request to update user with ID: {}", id);
 
         UserResponse updatedUser = userService.updateUser(id, request);
 
-        return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(GenericResponse.ok(updatedUser));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         log.info("Received request to delete user with ID: {}", id);
+
         userService.deleteUser(id);
+        
         return ResponseEntity.noContent().build();
     }
 }
