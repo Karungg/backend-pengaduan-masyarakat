@@ -2,6 +2,9 @@ package com.miftah.pengaduan_masyarakat.dto;
 
 import java.time.Instant;
 import java.util.UUID;
+
+import com.miftah.pengaduan_masyarakat.model.Role;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -17,6 +20,8 @@ public class UserResponse {
     private String username;
 
     private String email;
+
+    private Role role;
 
     private Instant createdAt;
 

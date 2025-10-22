@@ -28,4 +28,7 @@ public class UserRequest {
 
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "password must contain letters and numbers")
     private String password;
+
+    @NotBlank(message = "role name must not be blank")
+    private String role;
 }

@@ -3,9 +3,12 @@ package com.miftah.pengaduan_masyarakat.service;
 import com.miftah.pengaduan_masyarakat.dto.UserRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.exception.ResourceNotFoundException;
+import com.miftah.pengaduan_masyarakat.model.Role;
 import com.miftah.pengaduan_masyarakat.model.User;
+import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +22,14 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserResponse createUser(UserRequest request) {
@@ -38,10 +42,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Email is already taken.");
         }
 
+        Role role = roleRepository.findByName(request.getRole())
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + request.getRole()));
+
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(role);
 
         User savedUser = userRepository.save(user);
         log.info("Successfully created user with ID: {}", savedUser.getId());
@@ -118,8 +126,8 @@ public class UserServiceImpl implements UserService {
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getRole(),
                 user.getCreatedAt(),
-                user.getUpdatedAt()
-        );
+                user.getUpdatedAt());
     }
 }
