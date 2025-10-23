@@ -69,7 +69,7 @@ public class User implements UserDetails {
             return Collections.emptySet();
         }
 
-        return java.util.Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.getName()));
     }
 
     @Override
