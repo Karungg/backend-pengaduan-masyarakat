@@ -39,30 +39,46 @@ public class GlobalExceptionHandler {
     public ResponseEntity<GenericResponse<String>> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.warn("Illegal argument exception: {}", ex.getMessage());
 
-        String message = messageSource.getMessage("error.illegal.argument", new Object[] { ex.getMessage() },
-                ex.getMessage(), LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.badRequest(message);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        String message = messageSource.getMessage("error.illegal.argument", null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.badRequest().body(GenericResponse.badRequest(null, message));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<GenericResponse<String>> handleIllegalStateException(IllegalStateException ex) {
+        log.warn("Illegal state exception: {}", ex.getMessage());
+
+        String message = messageSource.getMessage("error.state.argument", null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.badRequest().body(GenericResponse.badRequest(null, message));
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<GenericResponse<Map<String, List<String>>>> handleValidationException(
+            ValidationException ex) {
+        log.warn("Validation exception: {}", ex.getMessage());
+
+        String message = messageSource.getMessage("error.validation.exception", null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.badRequest().body(GenericResponse.badRequest(ex.getErrors(), message));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<GenericResponse<String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());
 
-        String message = messageSource.getMessage("error.resource.notfound", new Object[] { ex.getMessage() },
-                ex.getMessage(), LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.notFound(message);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        String message = messageSource.getMessage("error.resource.notfound", null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GenericResponse.notFound(message));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<GenericResponse<String>> handleUsernameNotFoundException(UsernameNotFoundException ex) {
         log.warn("Authentication failed - user not found: {}", ex.getMessage());
 
-        String message = messageSource.getMessage("error.auth.usernotfound", new Object[] { ex.getMessage() },
-                ex.getMessage(), LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.notFound(message);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        String message = messageSource.getMessage("error.auth.usernotfound", null, LocaleContextHolder.getLocale());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(GenericResponse.badRequest(null, message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -76,9 +92,12 @@ public class GlobalExceptionHandler {
             String errorMessage = messageSource.getMessage(error, currentLocale);
             errors.computeIfAbsent(fieldName, k -> new ArrayList<>()).add(errorMessage);
         });
+
+        String message = messageSource.getMessage("error.method.argument", null, LocaleContextHolder.getLocale());
+
         log.warn("Validation failed: {}", errors);
-        GenericResponse<Map<String, List<String>>> response = GenericResponse.badRequest(errors);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.badRequest().body(GenericResponse.badRequest(errors, message));
     }
 
     // JWT Exception handler
@@ -88,17 +107,17 @@ public class GlobalExceptionHandler {
         log.warn("JWT token has expired: {}", ex.getMessage());
         String message = messageSource.getMessage("error.jwt.expired", null, "Token JWT telah kedaluwarsa.",
                 LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED, message);
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(GenericResponse.unauthorized(message));
     }
 
-    @ExceptionHandler({ SignatureException.class, MalformedJwtException.class }) // Tangani signature atau format salah
+    @ExceptionHandler({ SignatureException.class, MalformedJwtException.class })
     public ResponseEntity<GenericResponse<String>> handleInvalidJwtSignatureOrFormatException(JwtException ex) {
         log.warn("Invalid JWT token: {}", ex.getMessage());
         String message = messageSource.getMessage("error.jwt.invalid", null, "Token JWT tidak valid.",
                 LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED, message);
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(GenericResponse.unauthorized(message));
     }
 
     @ExceptionHandler(JwtException.class)
@@ -106,8 +125,8 @@ public class GlobalExceptionHandler {
         log.error("Error processing JWT token: {}", ex.getMessage());
         String message = messageSource.getMessage("error.jwt.processing", null, "Terjadi masalah saat memproses token.",
                 LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED, message);
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(GenericResponse.unauthorized(message));
     }
 
     // Spring security exception
@@ -118,8 +137,8 @@ public class GlobalExceptionHandler {
 
         String message = messageSource.getMessage("error.auth.failed", new Object[] { ex.getMessage() },
                 "Autentikasi gagal.", LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED, message);
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(GenericResponse.unauthorized(message));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -127,8 +146,8 @@ public class GlobalExceptionHandler {
         log.warn("Access denied: {}", ex.getMessage());
         String message = messageSource.getMessage("error.access.denied", null, "Akses ditolak.",
                 LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.error(HttpStatus.FORBIDDEN, message);
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(GenericResponse.forbidden(message));
     }
 
     @ExceptionHandler(Exception.class)
@@ -136,7 +155,7 @@ public class GlobalExceptionHandler {
         log.error("An unexpected error occurred: {}", ex.getMessage(), ex);
         String message = messageSource.getMessage("error.server.internal", null,
                 "Terjadi kesalahan internal pada server.", LocaleContextHolder.getLocale());
-        GenericResponse<String> response = GenericResponse.error(HttpStatus.INTERNAL_SERVER_ERROR, message);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity.internalServerError().body(GenericResponse.internalServerError(message));
     }
 }

@@ -1,5 +1,11 @@
 package com.miftah.pengaduan_masyarakat.service;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +15,7 @@ import com.miftah.pengaduan_masyarakat.dto.LoginRequest;
 import com.miftah.pengaduan_masyarakat.dto.LoginResponse;
 import com.miftah.pengaduan_masyarakat.dto.RegisterRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
+import com.miftah.pengaduan_masyarakat.exception.ValidationException;
 import com.miftah.pengaduan_masyarakat.model.Role;
 import com.miftah.pengaduan_masyarakat.model.User;
 import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
@@ -31,38 +38,54 @@ public class AuthenticationService {
 
     private final JwtService jwtService;
 
+    private final MessageSource messageSource;
+
     public AuthenticationService(
             UserRepository userRepository,
             RoleRepository roleRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService, MessageSource messageSource) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.messageSource = messageSource;
     }
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
         log.info("Attempting to register new user with username: {}", request.getUsername());
+        Locale currentLocale = LocaleContextHolder.getLocale();
 
         if (userRepository.existsByUsername(request.getUsername())) {
             log.warn("Registration failed: Username {} already exists.", request.getUsername());
-            throw new IllegalArgumentException("Username sudah terdaftar.");
+
+            String message = messageSource.getMessage("user.username.unique", null, "Username sudah terdaftar",
+                    currentLocale);
+
+            throw new ValidationException(message, Map.of("username", List.of(message)));
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
             log.warn("Registration failed: Email {} already exists.", request.getEmail());
-            throw new IllegalArgumentException("Email sudah terdaftar.");
+
+            String message = messageSource.getMessage("user.email.unique", null, "Email sudah terdaftar",
+                    currentLocale);
+
+            throw new ValidationException(message, Map.of("email", List.of(message)));
         }
 
         log.debug("Looking for role: {}", request.getRole());
         Role role = roleRepository.findByName(request.getRole())
                 .orElseThrow(() -> {
                     log.error("Registration failed: Role '{}' not found.", request.getRole());
-                    return new IllegalArgumentException("Role '" + request.getRole() + "' not found");
+
+                    String message = messageSource.getMessage("user.role.notfound", null, "Nama role tidak ditemukan",
+                            currentLocale);
+
+                    return new ValidationException(message, Map.of("username", List.of(message)));
                 });
         log.debug("Role found: {}", role.getName());
 
