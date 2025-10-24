@@ -3,6 +3,8 @@ package com.miftah.pengaduan_masyarakat.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +13,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.miftah.pengaduan_masyarakat.dto.GenericResponse;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,5 +68,45 @@ public class GlobalExceptionHandler {
         GenericResponse<String> response = GenericResponse.error(HttpStatus.INTERNAL_SERVER_ERROR,
                 "Terjadi kesalahan internal pada server.");
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // JWT Exception
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<GenericResponse<String>> handleExpiredJwtException(ExpiredJwtException ex) {
+        log.warn("JWT token has expired: {}", ex.getMessage());
+        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED,
+                "Token JWT telah kedaluwarsa.");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({ SignatureException.class, MalformedJwtException.class })
+    public ResponseEntity<GenericResponse<String>> handleInvalidJwtSignatureOrFormatException(JwtException ex) {
+        log.warn("Invalid JWT token: {}", ex.getMessage());
+        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED, "Token JWT tidak valid.");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<GenericResponse<String>> handleJwtException(JwtException ex) {
+        log.error("Error processing JWT token: {}", ex.getMessage());
+        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED,
+                "Terjadi masalah saat memproses token.");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<GenericResponse<String>> handleAuthenticationException(AuthenticationException ex) {
+        log.warn("Authentication failed: {}", ex.getMessage());
+        GenericResponse<String> response = GenericResponse.error(HttpStatus.UNAUTHORIZED,
+                "Autentikasi gagal: " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<GenericResponse<String>> handleAccessDeniedException(AccessDeniedException ex) {
+        log.warn("Access denied: {}", ex.getMessage());
+        GenericResponse<String> response = GenericResponse.error(HttpStatus.FORBIDDEN, "Akses ditolak.");
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 }
