@@ -13,9 +13,11 @@ import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.service.AuthenticationService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @RequestMapping("/api/v1/auth")
 @RestController
+@Slf4j
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -33,6 +35,8 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody @Valid LoginRequest request) {
+        log.info("Attempting to login with username " + request.getUsername());
+
         LoginResponse authenticatedUser = authenticationService.login(request);
 
         return ResponseEntity.ok().body(authenticatedUser);
