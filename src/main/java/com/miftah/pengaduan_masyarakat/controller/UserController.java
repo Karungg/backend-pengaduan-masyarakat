@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -58,7 +59,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GenericResponse<UserResponse>> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
+    public ResponseEntity<GenericResponse<UserResponse>> updateUser(@PathVariable UUID id,
+            @Valid @RequestBody UserRequest request) {
         log.info("Received request to update user with ID: {}", id);
 
         UserResponse updatedUser = userService.updateUser(id, request);
@@ -67,11 +69,11 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<GenericResponse<Void>> deleteUser(@PathVariable UUID id) {
         log.info("Received request to delete user with ID: {}", id);
 
         userService.deleteUser(id);
-        
-        return ResponseEntity.noContent().build();
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(GenericResponse.noContent());
     }
 }

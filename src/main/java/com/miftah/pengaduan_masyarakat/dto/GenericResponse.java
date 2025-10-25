@@ -46,11 +46,10 @@ public class GenericResponse<T> {
                 .build();
     }
 
-    public static <T> GenericResponse<T> noContent(T data) {
+    public static <T> GenericResponse<T> noContent() {
         return GenericResponse.<T>builder()
                 .code(HttpStatus.NO_CONTENT.value())
                 .status(HttpStatus.NO_CONTENT.getReasonPhrase())
-                .data(data)
                 .build();
     }
 

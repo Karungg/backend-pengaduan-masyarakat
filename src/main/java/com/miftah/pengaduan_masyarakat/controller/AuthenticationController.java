@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.miftah.pengaduan_masyarakat.dto.GenericResponse;
 import com.miftah.pengaduan_masyarakat.dto.LoginRequest;
 import com.miftah.pengaduan_masyarakat.dto.LoginResponse;
 import com.miftah.pengaduan_masyarakat.dto.RegisterRequest;
@@ -27,19 +28,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody @Valid RegisterRequest request) {
+    public ResponseEntity<GenericResponse<UserResponse>> register(@RequestBody @Valid RegisterRequest request) {
         UserResponse registeredUser = authenticationService.register(request);
 
-        return ResponseEntity.ok().body(registeredUser);
+        return ResponseEntity.ok().body(GenericResponse.ok(registeredUser));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<GenericResponse<LoginResponse>> authenticate(@RequestBody @Valid LoginRequest request) {
         log.info("Attempting to login with username " + request.getUsername());
 
         LoginResponse authenticatedUser = authenticationService.login(request);
 
-        return ResponseEntity.ok().body(authenticatedUser);
+        return ResponseEntity.ok().body(GenericResponse.ok(authenticatedUser));
     }
 
 }
