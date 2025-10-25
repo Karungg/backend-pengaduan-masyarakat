@@ -15,20 +15,19 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserRequest {
 
-    @NotBlank(message = "username must not be blank")
-    @Size(min = 3, max = 50, message = "username must be between 3 and 50 characters")
+    @NotBlank(message = "{user.username.notblank}")
+    @Size(min = 3, max = 50, message = "{user.username.size}")
     private String username;
 
-    @NotBlank(message = "email must not be blank")
-    @Email(message = "email must be a valid email address")
+    @NotBlank(message = "{user.email.notblank}")
+    @Email(message = "{user.email.email}")
     private String email;
 
-    @NotBlank(message = "password must not be blank")
-    @Size(min = 8, max = 100, message = "password must be at least 8 characters")
-
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "password must contain letters and numbers")
+    @NotBlank(message = "{user.password.notblank}")
+    @Size(min = 8, max = 100, message = "{user.password.size.range}")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "{user.password.pattern}")
     private String password;
 
-    @NotBlank(message = "role name must not be blank")
+    @NotBlank(message = "{user.role.notblank}")
     private String role;
 }

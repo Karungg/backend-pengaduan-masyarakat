@@ -3,6 +3,7 @@ package com.miftah.pengaduan_masyarakat.service;
 import com.miftah.pengaduan_masyarakat.dto.UserRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.exception.ResourceNotFoundException;
+import com.miftah.pengaduan_masyarakat.exception.ValidationException;
 import com.miftah.pengaduan_masyarakat.model.Role;
 import com.miftah.pengaduan_masyarakat.model.User;
 import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,14 +37,14 @@ public class UserServiceImpl implements UserService {
         log.info("Creating new user with username: {}", request.getUsername());
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Username is already taken.");
+            throw new ValidationException(Map.of("username", List.of("Username is already taken.")));
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email is already taken.");
+            throw new ValidationException(Map.of("email", List.of("Email is already taken.")));
         }
 
         Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + request.getRole()));
+                .orElseThrow(() -> new ValidationException(Map.of("role", List.of("Role is not found."))));
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -81,14 +83,14 @@ public class UserServiceImpl implements UserService {
 
         if (request.getEmail() != null && !request.getEmail().equals(userToUpdate.getEmail())) {
             if (userRepository.existsByEmail(request.getEmail())) {
-                throw new IllegalArgumentException("Email is already in taken.");
+                throw new ValidationException(Map.of("email", List.of("Email is already taken.")));
             }
             userToUpdate.setEmail(request.getEmail());
         }
 
         if (request.getUsername() != null && !request.getUsername().equals(userToUpdate.getUsername())) {
             if (userRepository.existsByUsername(request.getUsername())) {
-                throw new IllegalArgumentException("Username is already in taken.");
+                throw new ValidationException(Map.of("username", List.of("Username is already taken.")));
             }
             userToUpdate.setUsername(request.getUsername());
         }
