@@ -16,9 +16,7 @@ import com.miftah.pengaduan_masyarakat.dto.LoginResponse;
 import com.miftah.pengaduan_masyarakat.dto.RegisterRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.exception.ValidationException;
-import com.miftah.pengaduan_masyarakat.model.Role;
 import com.miftah.pengaduan_masyarakat.model.User;
-import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -27,8 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class AuthenticationService {
-
-    private final RoleRepository roleRepository;
 
     private final UserRepository userRepository;
 
@@ -42,13 +38,11 @@ public class AuthenticationService {
 
     public AuthenticationService(
             UserRepository userRepository,
-            RoleRepository roleRepository,
             AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder,
             JwtService jwtService, MessageSource messageSource) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.messageSource = messageSource;
@@ -77,23 +71,11 @@ public class AuthenticationService {
             throw new ValidationException(message, Map.of("email", List.of(message)));
         }
 
-        log.debug("Looking for role: {}", request.getRole());
-        Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> {
-                    log.error("Registration failed: Role '{}' not found.", request.getRole());
-
-                    String message = messageSource.getMessage("user.role.notfound", null, "Nama role tidak ditemukan",
-                            currentLocale);
-
-                    return new ValidationException(message, Map.of("username", List.of(message)));
-                });
-        log.debug("Role found: {}", role.getName());
-
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(role);
+        user.setRole(request.getRole());
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with ID: {}", savedUser.getId());

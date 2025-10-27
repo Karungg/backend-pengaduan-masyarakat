@@ -3,9 +3,8 @@ package com.miftah.pengaduan_masyarakat.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miftah.pengaduan_masyarakat.dto.LoginRequest;
 import com.miftah.pengaduan_masyarakat.dto.RegisterRequest;
-import com.miftah.pengaduan_masyarakat.model.Role;
+import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import com.miftah.pengaduan_masyarakat.model.User;
-import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,23 +36,15 @@ public class AuthenticationControllerTest {
         private UserRepository userRepository;
 
         @Autowired
-        private RoleRepository roleRepository;
-
-        @Autowired
         private PasswordEncoder passwordEncoder;
 
-        private Role userRole;
+        private RoleEnum userRole = RoleEnum.USER;
         private final String existingUsername = "existinguser";
         private final String existingEmail = "existing@example.com";
         private final String rawPassword = "password123";
 
         @BeforeEach
         void setUp() {
-                userRole = roleRepository.findByName("USER").orElseGet(() -> {
-                        Role newUserRole = new Role();
-                        newUserRole.setName("USER");
-                        return roleRepository.save(newUserRole);
-                });
 
                 User user = new User();
                 user.setUsername(existingUsername);
@@ -70,7 +61,7 @@ public class AuthenticationControllerTest {
                                 .username("newuser")
                                 .email("newuser@example.com")
                                 .password("passwordkuat456")
-                                .role("USER")
+                                .role(userRole)
                                 .build();
 
                 mockMvc.perform(post("/api/v1/auth/register")
@@ -89,7 +80,7 @@ public class AuthenticationControllerTest {
                                 .username(existingUsername)
                                 .email("newemail@example.com")
                                 .password("passwordkuat456")
-                                .role("USER")
+                                .role(userRole)
                                 .build();
 
                 mockMvc.perform(post("/api/v1/auth/register")
@@ -108,7 +99,7 @@ public class AuthenticationControllerTest {
                                 .username("anothernewuser")
                                 .email(existingEmail)
                                 .password("passwordkuat456")
-                                .role("USER")
+                                .role(userRole)
                                 .build();
 
                 mockMvc.perform(post("/api/v1/auth/register")
@@ -127,7 +118,7 @@ public class AuthenticationControllerTest {
                                 .username("us")
                                 .email("invalid-email")
                                 .password("pass")
-                                .role("")
+                                .role(userRole)
                                 .build();
 
                 mockMvc.perform(post("/api/v1/auth/register")
@@ -137,8 +128,7 @@ public class AuthenticationControllerTest {
                                 .andExpect(jsonPath("$.code").value(400))
                                 .andExpect(jsonPath("$.errors.username").exists())
                                 .andExpect(jsonPath("$.errors.email").exists())
-                                .andExpect(jsonPath("$.errors.password").exists())
-                                .andExpect(jsonPath("$.errors.role").exists());
+                                .andExpect(jsonPath("$.errors.password").exists());
         }
 
         @Test
@@ -177,8 +167,8 @@ public class AuthenticationControllerTest {
                 mockMvc.perform(post("/api/v1/auth/login")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
-                                .andExpect(status().isNotFound())
-                                .andExpect(jsonPath("$.code").value(400))
-                                .andExpect(jsonPath("$.data").exists());
+                                .andExpect(status().isUnauthorized())
+                                .andExpect(jsonPath("$.code").value(401))
+                                .andExpect(jsonPath("$.message").exists());
         }
 }

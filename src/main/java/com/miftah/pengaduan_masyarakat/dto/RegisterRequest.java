@@ -1,7 +1,10 @@
 package com.miftah.pengaduan_masyarakat.dto;
 
+import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -30,6 +33,6 @@ public class RegisterRequest {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "{user.password.pattern}")
     private String password;
 
-    @NotBlank(message = "{user.role.notblank}")
-    private String role;
+    @NotNull(message = "{user.role.notnull}")
+    private RoleEnum role;
 }

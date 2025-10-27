@@ -2,9 +2,8 @@ package com.miftah.pengaduan_masyarakat.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miftah.pengaduan_masyarakat.dto.UserRequest;
-import com.miftah.pengaduan_masyarakat.model.Role;
+import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import com.miftah.pengaduan_masyarakat.model.User;
-import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -38,9 +37,6 @@ class UserControllerTest {
         private UserRepository userRepository;
 
         @Autowired
-        private RoleRepository roleRepository;
-
-        @Autowired
         private ObjectMapper objectMapper;
 
         @Autowired
@@ -48,14 +44,10 @@ class UserControllerTest {
 
         private User existingUser;
 
-        private Role role;
+        private RoleEnum role = RoleEnum.ADMIN;
 
         @BeforeEach
         void setUp() {
-                role = new Role();
-                role.setName("ADMIN");
-                roleRepository.save(role);
-
                 existingUser = new User();
                 existingUser.setUsername("budisantoso");
                 existingUser.setEmail("budi.santoso@example.com");
@@ -70,7 +62,7 @@ class UserControllerTest {
         void createUser_whenValidRequest_shouldReturn201AndUserData() throws Exception {
                 UserRequest newUserRequest = new UserRequest("sitilestari", "siti.lestari@example.com",
                                 "passwordkuat456",
-                                "ADMIN");
+                                role);
 
                 mockMvc.perform(post("/api/v1/users")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +79,7 @@ class UserControllerTest {
         void createUser_whenUsernameExists_shouldReturn400() throws Exception {
                 UserRequest duplicateUserRequest = new UserRequest("budisantoso", "password123",
                                 "budi.baru@example.com",
-                                "ADMIN");
+                                role);
 
                 mockMvc.perform(post("/api/v1/users")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +122,7 @@ class UserControllerTest {
         @DisplayName("PUT /api/v1/users/{id} - Should update user successfully")
         void updateUser_whenValidRequest_shouldReturnUpdatedUser() throws Exception {
                 UserRequest updateRequest = new UserRequest("budisantoso_updated", "budi.updated@example.com",
-                                "passwordkuat456", "ADMIN");
+                                "passwordkuat456", role);
 
                 mockMvc.perform(put("/api/v1/users/{id}", existingUser.getId())
                                 .contentType(MediaType.APPLICATION_JSON)

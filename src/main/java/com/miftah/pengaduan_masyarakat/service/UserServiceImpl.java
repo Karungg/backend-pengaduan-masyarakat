@@ -4,9 +4,7 @@ import com.miftah.pengaduan_masyarakat.dto.UserRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.exception.ResourceNotFoundException;
 import com.miftah.pengaduan_masyarakat.exception.ValidationException;
-import com.miftah.pengaduan_masyarakat.model.Role;
 import com.miftah.pengaduan_masyarakat.model.User;
-import com.miftah.pengaduan_masyarakat.repository.RoleRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +26,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -43,14 +39,11 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException(Map.of("email", List.of("Email is already taken.")));
         }
 
-        Role role = roleRepository.findByName(request.getRole())
-                .orElseThrow(() -> new ValidationException(Map.of("role", List.of("Role is not found."))));
-
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(role);
+        user.setRole(request.getRole());
 
         User savedUser = userRepository.save(user);
         log.info("Successfully created user with ID: {}", savedUser.getId());

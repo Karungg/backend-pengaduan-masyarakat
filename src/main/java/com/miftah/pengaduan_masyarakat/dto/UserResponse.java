@@ -3,7 +3,7 @@ package com.miftah.pengaduan_masyarakat.dto;
 import java.time.Instant;
 import java.util.UUID;
 
-import com.miftah.pengaduan_masyarakat.model.Role;
+import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class UserResponse {
 
     private String email;
 
-    private Role role;
+    private RoleEnum role;
 
     private Instant createdAt;
 
