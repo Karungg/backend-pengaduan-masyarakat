@@ -64,8 +64,8 @@ public class GenericResponse<T> {
 
     public static <T> GenericResponse<T> notFound(String message) {
         return GenericResponse.<T>builder()
-                .code(HttpStatus.BAD_REQUEST.value())
-                .status(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .code(HttpStatus.NOT_FOUND.value())
+                .status(HttpStatus.NOT_FOUND.getReasonPhrase())
                 .message(message)
                 .build();
     }
