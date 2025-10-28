@@ -1,5 +1,6 @@
 package com.miftah.pengaduan_masyarakat.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +10,7 @@ import com.miftah.pengaduan_masyarakat.model.Agency;
 
 @Repository
 public interface AgencyRepository extends JpaRepository<Agency, UUID> {
+
+    Optional<Agency> findByPhone(String phone);
 
 }
