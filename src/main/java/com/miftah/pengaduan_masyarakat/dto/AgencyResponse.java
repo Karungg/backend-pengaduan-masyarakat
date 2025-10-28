@@ -24,7 +24,7 @@ public class AgencyResponse {
 
     private String phone;
 
-    private UserResponse user;
+    private String userId;
 
     private Instant createdAt;
 
