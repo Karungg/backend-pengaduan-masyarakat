@@ -3,6 +3,7 @@ package com.miftah.pengaduan_masyarakat.controller;
 import com.miftah.pengaduan_masyarakat.dto.GenericResponse;
 import com.miftah.pengaduan_masyarakat.dto.UserRequest;
 import com.miftah.pengaduan_masyarakat.dto.UserResponse;
+import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import com.miftah.pengaduan_masyarakat.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +42,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<GenericResponse<List<UserResponse>>> getAllUsers() {
-        log.info("Received request to fetch all users");
+    public ResponseEntity<GenericResponse<List<UserResponse>>> getAllUsers(
+            @RequestParam(required = false) RoleEnum role) {
+        log.info("Received request to fetch all users with role : {}", role);
 
-        List<UserResponse> users = userService.getAllUsers();
+        List<UserResponse> users = userService.getAllUsers(role);
 
         return ResponseEntity.ok(GenericResponse.ok(users));
     }

@@ -42,5 +42,4 @@ public class AuthenticationController {
 
         return ResponseEntity.ok().body(GenericResponse.ok(authenticatedUser));
     }
-
 }

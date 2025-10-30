@@ -59,9 +59,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponse> getAllUsers() {
-        log.debug("Fetching all users");
-        return userRepository.findAll().stream()
+    public List<UserResponse> getAllUsers(RoleEnum role) {
+        log.debug("Fetching all users with role: {}", role);
+
+        List<User> users;
+
+        if (role != null) {
+            users = userRepository.findByRole(role);
+        } else {
+            users = userRepository.findAll();
+        }
+
+        return users.stream()
                 .map(this::convertToUserResponse)
                 .collect(Collectors.toList());
     }

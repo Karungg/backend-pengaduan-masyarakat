@@ -1,6 +1,9 @@
 package com.miftah.pengaduan_masyarakat.repository;
 
+import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import com.miftah.pengaduan_masyarakat.model.User;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +15,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByEmail(String email);
+
+    List<User> findByRole(RoleEnum role);
 
     boolean existsByUsername(String username);
 
