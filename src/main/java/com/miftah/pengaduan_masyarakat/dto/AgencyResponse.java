@@ -9,6 +9,7 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -24,7 +25,7 @@ public class AgencyResponse {
 
     private String phone;
 
-    private String userId;
+    private UserResponse user;
 
     private Instant createdAt;
 

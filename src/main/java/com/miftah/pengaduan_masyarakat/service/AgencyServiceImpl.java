@@ -2,6 +2,7 @@ package com.miftah.pengaduan_masyarakat.service;
 
 import com.miftah.pengaduan_masyarakat.dto.AgencyRequest;
 import com.miftah.pengaduan_masyarakat.dto.AgencyResponse;
+import com.miftah.pengaduan_masyarakat.dto.UserResponse;
 import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import com.miftah.pengaduan_masyarakat.exception.ResourceNotFoundException;
 import com.miftah.pengaduan_masyarakat.exception.ValidationException;
@@ -152,9 +153,22 @@ public class AgencyServiceImpl implements AgencyService {
                 agency.getName(),
                 agency.getAddress(),
                 agency.getPhone(),
-                agency.getUser().getId().toString(),
+                convertToUserResponse(agency.getUser()),
                 agency.getCreatedAt(),
                 agency.getUpdatedAt());
+    }
+
+    private UserResponse convertToUserResponse(User user) {
+        if (user == null) {
+            return null;
+        }
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole(),
+                user.getCreatedAt(),
+                user.getUpdatedAt());
     }
 
     private void validateAgencyUniqueness(String phone, UUID currentAgencyId, Map<String, List<String>> errors,
