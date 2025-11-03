@@ -10,6 +10,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.miftah.pengaduan_masyarakat.enums.StatusEnum;
+import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -26,28 +29,41 @@ public class Complaint {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(length = 255, nullable = false)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false, length = 50)
+    private TypeEnum type;
 
-    @Column(nullable = false)
+    @Column(name = "title", nullable = true)
     private String title;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Lob
+    @Column(name = "description", nullable = true)
     private String description;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(name = "date", nullable = false)
     private Instant date;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(name = "location", nullable = false)
     private String location;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", nullable = false, unique = false)
-    private User user;
+    @Column(name = "attachment_url", nullable = true)
+    private String attachmentUrl;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "agency_id", nullable = false, unique = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 50)
+    private StatusEnum status;
+
+    @Lob
+    @Column(name = "aspiration", nullable = true)
+    private String aspiration;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agency_id", nullable = true)
     private Agency agency;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
