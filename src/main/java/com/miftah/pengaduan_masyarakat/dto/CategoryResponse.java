@@ -1,28 +1,24 @@
 package com.miftah.pengaduan_masyarakat.dto;
 
+import java.time.Instant;
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-import java.util.UUID;
-
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class AgencyResponse {
+@NoArgsConstructor
+public class CategoryResponse {
 
     private UUID id;
 
     private String name;
 
-    private String address;
-
-    private String phone;
-
-    private UserResponse user;
+    private String description;
 
     private Instant createdAt;
 

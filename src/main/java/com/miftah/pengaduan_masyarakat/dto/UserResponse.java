@@ -8,12 +8,10 @@ import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class UserResponse {
     private UUID id;
 
