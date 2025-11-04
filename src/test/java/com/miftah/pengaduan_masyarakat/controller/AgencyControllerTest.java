@@ -85,7 +85,7 @@ class AgencyControllerTest {
                                 .andExpect(jsonPath("$.code").value(201))
                                 .andExpect(jsonPath("$.data.name").value("Dinas Sosial Kota Bogor"))
                                 .andExpect(jsonPath("$.data.phone").value("02518327888"))
-                                .andExpect(jsonPath("$.data.userId")
+                                .andExpect(jsonPath("$.data.user.id")
                                                 .exists());
         }
 
@@ -134,7 +134,7 @@ class AgencyControllerTest {
                                 .andExpect(jsonPath("$.code").value(200))
                                 .andExpect(jsonPath("$.data.id").value(existingAgency.getId().toString()))
                                 .andExpect(jsonPath("$.data.name").value("Dinas Kesehatan Kota Bogor"))
-                                .andExpect(jsonPath("$.data.userId").value(agencyUser.getId().toString()));
+                                .andExpect(jsonPath("$.data.user.id").value(agencyUser.getId().toString()));
         }
 
         @Test
@@ -192,7 +192,7 @@ class AgencyControllerTest {
                                 .andExpect(jsonPath("$.code").value(200))
                                 .andExpect(jsonPath("$.data.name").value("Dinas Kesehatan V2"))
                                 .andExpect(jsonPath("$.data.phone").value("02518333444"))
-                                .andExpect(jsonPath("$.data.userId").value(agencyUser.getId().toString()));
+                                .andExpect(jsonPath("$.data.user.id").value(agencyUser.getId().toString()));
         }
 
         @Test
