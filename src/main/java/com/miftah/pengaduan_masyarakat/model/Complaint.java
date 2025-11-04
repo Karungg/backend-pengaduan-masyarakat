@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.miftah.pengaduan_masyarakat.enums.StatusEnum;
 import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
+import com.miftah.pengaduan_masyarakat.enums.VisibilityEnum;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -26,12 +27,16 @@ import java.util.UUID;
 public class Complaint {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 50)
     private TypeEnum type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false, length = 50)
+    private VisibilityEnum visibility;
 
     @Column(name = "title", nullable = true)
     private String title;

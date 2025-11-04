@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
+import com.miftah.pengaduan_masyarakat.enums.VisibilityEnum;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +23,9 @@ public class ComplaintRequest {
 
     @NotNull(message = "{complaint.type.notnull}")
     private TypeEnum type;
+
+    @NotNull(message = "{complaint.visibility.notnull}")
+    private VisibilityEnum visibility;
 
     @Size(max = 255, message = "{complaint.title.size}")
     private String title;

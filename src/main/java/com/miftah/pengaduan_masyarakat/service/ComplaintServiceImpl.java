@@ -41,6 +41,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setUser(user);
         complaint.setAgency(agency);
         complaint.setType(request.getType());
+        complaint.setVisibility(request.getVisibility());
         complaint.setTitle(request.getTitle());
         complaint.setDescription(request.getDescription());
         complaint.setDate(request.getDate());
@@ -83,6 +84,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         Agency newAgency = findAgencyByIdOrThrow(request.getAgencyId());
 
         complaintToUpdate.setType(request.getType());
+        complaintToUpdate.setVisibility(request.getVisibility());
         complaintToUpdate.setTitle(request.getTitle());
         complaintToUpdate.setDescription(request.getDescription());
         complaintToUpdate.setDate(request.getDate());
@@ -144,6 +146,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         ComplaintResponse response = new ComplaintResponse();
         response.setId(complaint.getId());
         response.setType(complaint.getType());
+        response.setVisibility(complaint.getVisibility());
         response.setTitle(complaint.getTitle());
         response.setDescription(complaint.getDescription());
         response.setDate(complaint.getDate());

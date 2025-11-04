@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.miftah.pengaduan_masyarakat.enums.StatusEnum;
 import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
+import com.miftah.pengaduan_masyarakat.enums.VisibilityEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,8 @@ public class ComplaintResponse {
     private UUID id;
 
     private TypeEnum type;
+
+    private VisibilityEnum visibility;
 
     private String title;
 

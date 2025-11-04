@@ -23,7 +23,7 @@ import java.util.UUID;
 public class Agency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(length = 255, nullable = false)
