@@ -23,6 +23,18 @@ public class ComplaintResponse {
 
     private VisibilityEnum visibility;
 
+    private String categoryName;
+
+    private UUID userId;
+
+    private String username;
+
+    private UUID agencyId;
+
+    private String agencyName;
+
+    private UUID categoryId;
+
     private String title;
 
     private String description;
@@ -40,17 +52,4 @@ public class ComplaintResponse {
     private Instant createdAt;
 
     private Instant updatedAt;
-
-    private UUID userId;
-
-    private String username;
-
-    private UUID agencyId;
-
-    private String agencyName;
-
-    private UUID categoryId;
-
-    private String categoryName;
-
 }
