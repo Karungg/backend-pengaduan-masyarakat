@@ -52,7 +52,7 @@ public class AuthenticationService {
             String message = messageSource.getMessage("user.username.unique", null, "Username sudah terdaftar",
                     currentLocale);
 
-            errors.put(message, List.of(message));
+            errors.put("username", List.of(message));
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -61,7 +61,7 @@ public class AuthenticationService {
             String message = messageSource.getMessage("user.email.unique", null, "Email sudah terdaftar",
                     currentLocale);
 
-            errors.put(message, List.of(message));
+            errors.put("email", List.of(message));
         }
 
         if (!errors.isEmpty()) {
