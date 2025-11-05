@@ -20,10 +20,12 @@ import com.miftah.pengaduan_masyarakat.model.User;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository userRepository;
@@ -35,18 +37,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
 
     private final MessageSource messageSource;
-
-    public AuthenticationService(
-            UserRepository userRepository,
-            AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService, MessageSource messageSource) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.messageSource = messageSource;
-    }
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
