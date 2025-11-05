@@ -30,13 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final AuthenticationManager authenticationManager;
-
     private final JwtService jwtService;
-
     private final MessageSource messageSource;
 
     @Transactional
@@ -65,7 +61,8 @@ public class AuthenticationService {
         }
 
         if (!errors.isEmpty()) {
-            throw new ValidationException("Validation errors", errors);
+            log.warn("Register failed due to validation errors: {}", errors);
+            throw new ValidationException("Validation failed", errors);
         }
 
         User user = new User();
