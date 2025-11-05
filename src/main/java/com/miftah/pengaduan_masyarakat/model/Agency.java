@@ -24,15 +24,16 @@ public class Agency {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @Column(length = 255, nullable = false)
+    @Column(name = "name", length = 255, nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(length = 20, nullable = false, unique = true)
+    @Column(name = "phone", length = 20, nullable = false, unique = true)
     private String phone;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

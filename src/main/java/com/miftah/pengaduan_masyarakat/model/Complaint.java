@@ -28,6 +28,7 @@ public class Complaint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
     @Enumerated(EnumType.STRING)

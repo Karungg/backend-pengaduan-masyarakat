@@ -52,6 +52,7 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 20)
     private RoleEnum role;
 
     @CreatedDate
