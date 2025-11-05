@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,18 +22,20 @@ import com.miftah.pengaduan_masyarakat.dto.GenericResponse;
 import com.miftah.pengaduan_masyarakat.service.ComplaintService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/complaints")
 @Slf4j
+@RequiredArgsConstructor
 public class ComplaintController {
 
-    @Autowired
-    private ComplaintService complaintService;
+    private final ComplaintService complaintService;
 
     @PostMapping
-    public ResponseEntity<GenericResponse<ComplaintResponse>> createComplaint(@Valid @RequestBody ComplaintRequest request) {
+    public ResponseEntity<GenericResponse<ComplaintResponse>> createComplaint(
+            @Valid @RequestBody ComplaintRequest request) {
         log.info("Received request to create complaint with user_id: {}", request.getUserId());
         ComplaintResponse createdComplaint = complaintService.createComplaint(request);
 
