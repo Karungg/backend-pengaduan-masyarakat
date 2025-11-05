@@ -29,7 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@WithMockUser(roles = "ADMIN")
 class UserControllerTest {
+
         @Autowired
         private MockMvc mockMvc;
 
@@ -43,7 +45,6 @@ class UserControllerTest {
         private PasswordEncoder passwordEncoder;
 
         private User existingUser;
-
         private RoleEnum role = RoleEnum.ADMIN;
 
         @BeforeEach
@@ -57,7 +58,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("POST /api/v1/users - Should create user successfully")
         void createUser_whenValidRequest_shouldReturn201AndUserData() throws Exception {
                 UserRequest newUserRequest = new UserRequest("sitilestari", "siti.lestari@example.com",
@@ -74,7 +74,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("POST /api/v1/users - Should fail if username already exists")
         void createUser_whenUsernameExists_shouldReturn400() throws Exception {
                 UserRequest duplicateUserRequest = new UserRequest("budisantoso", "password123",
@@ -88,7 +87,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("GET /api/v1/users - Should return list of users")
         void getAllUsers_shouldReturnUserList() throws Exception {
                 mockMvc.perform(get("/api/v1/users"))
@@ -99,7 +97,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("GET /api/v1/users/{id} - Should return user when ID exists")
         void getUserById_whenIdExists_shouldReturnUser() throws Exception {
                 mockMvc.perform(get("/api/v1/users/{id}", existingUser.getId()))
@@ -109,7 +106,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("GET /api/v1/users/{id} - Should return 404 when ID does not exist")
         void getUserById_whenIdDoesNotExist_shouldReturn404() throws Exception {
                 UUID nonExistentId = UUID.randomUUID();
@@ -118,7 +114,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("PUT /api/v1/users/{id} - Should update user successfully")
         void updateUser_whenValidRequest_shouldReturnUpdatedUser() throws Exception {
                 UserRequest updateRequest = new UserRequest("budisantoso_updated", "budi.updated@example.com",
@@ -133,7 +128,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("DELETE /api/v1/users/{id} - Should delete user successfully")
         void deleteUser_whenIdExists_shouldReturn204() throws Exception {
                 mockMvc.perform(delete("/api/v1/users/{id}", existingUser.getId()))
@@ -143,7 +137,6 @@ class UserControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("DELETE /api/v1/users/{id} - Should return 404 when ID does not exist")
         void deleteUser_whenIdDoesNotExist_shouldReturn404() throws Exception {
                 UUID nonExistentId = UUID.randomUUID();

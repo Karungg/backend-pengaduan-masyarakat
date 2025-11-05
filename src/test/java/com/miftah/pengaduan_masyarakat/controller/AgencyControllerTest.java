@@ -31,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@WithMockUser(roles = "ADMIN")
 class AgencyControllerTest {
 
         @Autowired
@@ -69,7 +70,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("POST /api/v1/agencies - Success")
         void createAgency_whenValidRequest_shouldReturn201AndAgencyData() throws Exception {
                 UserRequest newUserRequest = new UserRequest("dinas_sosial", "dinsos@bogor.go.id", "PassDinsos456!",
@@ -90,7 +90,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("POST /api/v1/agencies - Invalid Data")
         void createAgency_whenInvalidData_shouldReturn400() throws Exception {
                 UserRequest invalidUserRequest = new UserRequest("di", "dinsos@", "pass", null);
@@ -126,7 +125,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("GET /api/v1/agencies/{id} - Success")
         void getAgencyById_whenExists_shouldReturnAgencyData() throws Exception {
                 mockMvc.perform(get("/api/v1/agencies/{id}", existingAgency.getId()))
@@ -138,7 +136,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("GET /api/v1/agencies/{id} - Not Found")
         void getAgencyById_whenNotFound_shouldReturn404() throws Exception {
                 UUID randomId = UUID.randomUUID();
@@ -148,7 +145,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("GET /api/v1/agencies - Success")
         void getAllAgencies_shouldReturnListOfAgencies() throws Exception {
 
@@ -174,7 +170,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("PUT /api/v1/agencies/{id} - Success")
         void updateAgency_whenValidRequest_shouldReturnUpdatedData() throws Exception {
 
@@ -196,7 +191,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("PUT /api/v1/agencies/{id} - Not Found")
         void updateAgency_whenNotFound_shouldReturn404() throws Exception {
                 UUID randomId = UUID.randomUUID();
@@ -213,7 +207,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("DELETE /api/v1/agencies/{id} - Success")
         void deleteAgency_whenExists_shouldReturn204() throws Exception {
                 mockMvc.perform(delete("/api/v1/agencies/{id}", existingAgency.getId()))
@@ -224,7 +217,6 @@ class AgencyControllerTest {
         }
 
         @Test
-        @WithMockUser(roles = "ADMIN")
         @DisplayName("DELETE /api/v1/agencies/{id} - Not Found")
         void deleteAgency_whenNotFound_shouldReturn404() throws Exception {
                 UUID randomId = UUID.randomUUID();
