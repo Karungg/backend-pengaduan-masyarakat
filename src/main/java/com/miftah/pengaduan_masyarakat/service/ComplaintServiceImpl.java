@@ -7,6 +7,7 @@ import com.miftah.pengaduan_masyarakat.exception.ResourceNotFoundException;
 import com.miftah.pengaduan_masyarakat.exception.ValidationException;
 import com.miftah.pengaduan_masyarakat.model.*;
 import com.miftah.pengaduan_masyarakat.repository.AgencyRepository;
+import com.miftah.pengaduan_masyarakat.repository.CategoryRepository;
 import com.miftah.pengaduan_masyarakat.repository.ComplaintRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
@@ -28,6 +29,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final UserRepository userRepository;
     private final AgencyRepository agencyRepository;
+    private final CategoryRepository categoryRepository;
     private final MessageSource messageSource;
 
     @Transactional
@@ -36,10 +38,12 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         User user = findUserByIdOrThrow(request.getUserId());
         Agency agency = findAgencyByIdOrThrow(request.getAgencyId());
+        Category category = findCategoryByIdOrThrow(request.getCategoryId());
 
         Complaint complaint = new Complaint();
         complaint.setUser(user);
         complaint.setAgency(agency);
+        complaint.setCategory(category);
         complaint.setType(request.getType());
         complaint.setVisibility(request.getVisibility());
         complaint.setTitle(request.getTitle());
@@ -82,9 +86,11 @@ public class ComplaintServiceImpl implements ComplaintService {
 
         Complaint complaintToUpdate = findComplaintByIdOrThrow(id);
         Agency newAgency = findAgencyByIdOrThrow(request.getAgencyId());
+        Category newCategory = findCategoryByIdOrThrow(request.getCategoryId());
 
         complaintToUpdate.setType(request.getType());
         complaintToUpdate.setVisibility(request.getVisibility());
+        complaintToUpdate.setCategory(newCategory);
         complaintToUpdate.setTitle(request.getTitle());
         complaintToUpdate.setDescription(request.getDescription());
         complaintToUpdate.setDate(request.getDate());
@@ -139,9 +145,21 @@ public class ComplaintServiceImpl implements ComplaintService {
                 });
     }
 
+    private Category findCategoryByIdOrThrow(UUID categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.warn("Invalid request. Category with ID {} not found.", categoryId);
+                    Locale locale = LocaleContextHolder.getLocale();
+                    String message = messageSource.getMessage("category.notfound.id", new Object[] { categoryId },
+                            "Kategori tidak ditemukan.", locale);
+                    return new ValidationException(message, Map.of("categoryId", List.of(message)));
+                });
+    }
+
     private ComplaintResponse convertToComplaintResponse(Complaint complaint) {
         User user = complaint.getUser();
         Agency agency = complaint.getAgency();
+        Category category = complaint.getCategory();
 
         ComplaintResponse response = new ComplaintResponse();
         response.setId(complaint.getId());
@@ -164,6 +182,10 @@ public class ComplaintServiceImpl implements ComplaintService {
         if (agency != null) {
             response.setAgencyId(agency.getId());
             response.setAgencyName(agency.getName());
+        }
+        if (category != null) {
+            response.setCategoryId(category.getId());
+            response.setCategoryName(category.getName());
         }
 
         return response;

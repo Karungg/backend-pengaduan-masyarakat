@@ -14,14 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.miftah.pengaduan_masyarakat.dto.GenericResponse;
 import com.miftah.pengaduan_masyarakat.dto.CategoryRequest;
 import com.miftah.pengaduan_masyarakat.dto.CategoryResponse;
-import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
 import com.miftah.pengaduan_masyarakat.service.CategoryService;
 
 import jakarta.validation.Valid;

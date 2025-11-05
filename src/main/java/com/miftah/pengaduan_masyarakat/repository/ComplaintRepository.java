@@ -8,4 +8,6 @@ import com.miftah.pengaduan_masyarakat.model.Complaint;
 
 public interface ComplaintRepository extends JpaRepository<Complaint, UUID> {
 
+    boolean existsByCategoryId(UUID categoryId);
+
 }

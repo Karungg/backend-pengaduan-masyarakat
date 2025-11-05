@@ -52,4 +52,7 @@ public class ComplaintRequest {
 
     @NotNull(message = "{complaint.agencyId.notnull}")
     private UUID agencyId;
+
+    @NotNull(message = "{complaint.categoryId.notnull}")
+    private UUID categoryId;
 }

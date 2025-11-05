@@ -8,6 +8,7 @@ import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
 import com.miftah.pengaduan_masyarakat.enums.VisibilityEnum;
 import com.miftah.pengaduan_masyarakat.model.*;
 import com.miftah.pengaduan_masyarakat.repository.AgencyRepository;
+import com.miftah.pengaduan_masyarakat.repository.CategoryRepository;
 import com.miftah.pengaduan_masyarakat.repository.ComplaintRepository;
 import com.miftah.pengaduan_masyarakat.repository.UserRepository;
 
@@ -55,9 +56,13 @@ class ComplaintControllerTest {
         @Autowired
         private PasswordEncoder passwordEncoder;
 
+        @Autowired
+        private CategoryRepository categoryRepository;
+
         private User reportingUser;
         private Agency targetAgency;
         private Complaint existingComplaint;
+        private Category category;
 
         @BeforeEach
         void setUp() {
@@ -82,9 +87,15 @@ class ComplaintControllerTest {
                 targetAgency.setUser(agencyUser);
                 agencyRepository.save(targetAgency);
 
+                category = new Category();
+                category.setName("Infrastruktur");
+                category.setDescription("Masalah terkait dengan infrastruktur");
+                categoryRepository.save(category);
+
                 existingComplaint = new Complaint();
                 existingComplaint.setUser(reportingUser);
                 existingComplaint.setAgency(targetAgency);
+                existingComplaint.setCategory(category);
                 existingComplaint.setType(TypeEnum.COMPLAINT);
                 existingComplaint.setVisibility(VisibilityEnum.PUBLIC);
                 existingComplaint.setTitle("Jalan Rusak");
@@ -108,7 +119,8 @@ class ComplaintControllerTest {
                                 null,
                                 "Mohon ditambahkan lebih banyak lampu taman.",
                                 reportingUser.getId(),
-                                targetAgency.getId());
+                                targetAgency.getId(),
+                                category.getId());
 
                 mockMvc.perform(post("/api/v1/complaints")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -130,6 +142,7 @@ class ComplaintControllerTest {
                                 "",
                                 null, null,
                                 null,
+                                null,
                                 null);
 
                 mockMvc.perform(post("/api/v1/complaints")
@@ -141,7 +154,8 @@ class ComplaintControllerTest {
                                 .andExpect(jsonPath("$.errors.date").exists())
                                 .andExpect(jsonPath("$.errors.location").exists())
                                 .andExpect(jsonPath("$.errors.userId").exists())
-                                .andExpect(jsonPath("$.errors.agencyId").exists());
+                                .andExpect(jsonPath("$.errors.agencyId").exists())
+                                .andExpect(jsonPath("$.errors.categoryId").exists());
         }
 
         @Test
@@ -157,7 +171,8 @@ class ComplaintControllerTest {
                                 "Lokasi",
                                 null, null,
                                 randomUserId,
-                                targetAgency.getId());
+                                targetAgency.getId(),
+                                category.getId());
 
                 mockMvc.perform(post("/api/v1/complaints")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -209,7 +224,8 @@ class ComplaintControllerTest {
                                 "Bogor Barat",
                                 null, null,
                                 reportingUser.getId(),
-                                targetAgency.getId());
+                                targetAgency.getId(),
+                                category.getId());
 
                 mockMvc.perform(put("/api/v1/complaints/{id}", existingComplaint.getId())
                                 .contentType(MediaType.APPLICATION_JSON)

@@ -49,4 +49,8 @@ public class ComplaintResponse {
 
     private String agencyName;
 
+    private UUID categoryId;
+
+    private String categoryName;
+
 }
