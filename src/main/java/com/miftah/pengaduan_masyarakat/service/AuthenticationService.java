@@ -1,5 +1,6 @@
 package com.miftah.pengaduan_masyarakat.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,13 +44,15 @@ public class AuthenticationService {
         log.info("Attempting to register new user with username: {}", request.getUsername());
         Locale currentLocale = LocaleContextHolder.getLocale();
 
+        Map<String, List<String>> errors = new HashMap<>();
+
         if (userRepository.existsByUsername(request.getUsername())) {
             log.warn("Registration failed: Username {} already exists.", request.getUsername());
 
             String message = messageSource.getMessage("user.username.unique", null, "Username sudah terdaftar",
                     currentLocale);
 
-            throw new ValidationException(message, Map.of("username", List.of(message)));
+            errors.put(message, List.of(message));
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -58,7 +61,11 @@ public class AuthenticationService {
             String message = messageSource.getMessage("user.email.unique", null, "Email sudah terdaftar",
                     currentLocale);
 
-            throw new ValidationException(message, Map.of("email", List.of(message)));
+            errors.put(message, List.of(message));
+        }
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException("Validation errors", errors);
         }
 
         User user = new User();
