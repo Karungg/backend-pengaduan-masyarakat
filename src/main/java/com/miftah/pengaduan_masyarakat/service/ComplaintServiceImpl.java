@@ -98,6 +98,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaintToUpdate.setAttachmentUrl(request.getAttachmentUrl());
         complaintToUpdate.setAspiration(request.getAspiration());
         complaintToUpdate.setAgency(newAgency);
+        complaintToUpdate.setStatus(request.getStatus());
 
         Complaint updatedComplaint = complaintRepository.save(complaintToUpdate);
         log.info("Complaint updated successfully with ID: {}", updatedComplaint.getId());

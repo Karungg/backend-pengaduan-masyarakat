@@ -3,10 +3,7 @@ package com.miftah.pengaduan_masyarakat.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.miftah.pengaduan_masyarakat.dto.CategoryRequest;
 import com.miftah.pengaduan_masyarakat.enums.RoleEnum;
-import com.miftah.pengaduan_masyarakat.enums.StatusEnum;
-import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
 import com.miftah.pengaduan_masyarakat.model.Category;
-import com.miftah.pengaduan_masyarakat.model.Complaint;
 import com.miftah.pengaduan_masyarakat.model.User;
 import com.miftah.pengaduan_masyarakat.repository.CategoryRepository;
 import com.miftah.pengaduan_masyarakat.repository.ComplaintRepository;
@@ -23,12 +20,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

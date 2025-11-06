@@ -3,6 +3,7 @@ package com.miftah.pengaduan_masyarakat.dto;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.miftah.pengaduan_masyarakat.enums.StatusEnum;
 import com.miftah.pengaduan_masyarakat.enums.TypeEnum;
 import com.miftah.pengaduan_masyarakat.enums.VisibilityEnum;
 
@@ -26,6 +27,9 @@ public class ComplaintRequest {
 
     @NotNull(message = "{complaint.visibility.notnull}")
     private VisibilityEnum visibility;
+
+    @NotNull(message = "{complaint.status.notnull}")
+    private StatusEnum status;
 
     @Size(max = 255, message = "{complaint.title.size}")
     private String title;
