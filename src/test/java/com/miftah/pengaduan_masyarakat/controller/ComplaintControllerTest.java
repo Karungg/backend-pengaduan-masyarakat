@@ -112,6 +112,7 @@ class ComplaintControllerTest {
                 ComplaintRequest request = new ComplaintRequest(
                                 TypeEnum.ASPIRATION,
                                 VisibilityEnum.PUBLIC,
+                                StatusEnum.PENDING,
                                 "Usulan Perbaikan",
                                 null,
                                 Instant.now(),
@@ -136,6 +137,7 @@ class ComplaintControllerTest {
         @DisplayName("POST /api/v1/complaints - Error Validasi DTO")
         void createComplaint_whenInvalidRequest_shouldReturn400() throws Exception {
                 ComplaintRequest request = new ComplaintRequest(
+                                null,
                                 null,
                                 null,
                                 null, null, null,
@@ -165,6 +167,7 @@ class ComplaintControllerTest {
                 ComplaintRequest request = new ComplaintRequest(
                                 TypeEnum.COMPLAINT,
                                 VisibilityEnum.PRIVATE,
+                                StatusEnum.PENDING,
                                 "Judul",
                                 "Deskripsi",
                                 Instant.now(),
@@ -218,6 +221,7 @@ class ComplaintControllerTest {
                 ComplaintRequest request = new ComplaintRequest(
                                 TypeEnum.COMPLAINT,
                                 VisibilityEnum.PRIVATE,
+                                StatusEnum.IN_PROGRESS,
                                 "UPDATE: Jalan Rusak Parah",
                                 "Deskripsi update",
                                 existingComplaint.getDate(),
