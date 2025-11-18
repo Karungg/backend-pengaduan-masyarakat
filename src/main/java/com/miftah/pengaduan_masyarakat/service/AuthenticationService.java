@@ -93,7 +93,11 @@ public class AuthenticationService {
                 });
 
         log.debug("Generating JWT token for user: {}", user.getUsername());
-        String jwtToken = jwtService.generateToken(user);
+
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("email", user.getEmail());
+
+        String jwtToken = jwtService.generateToken(extraClaims, user);
 
         log.info("Login successful for user: {}", user.getUsername());
 

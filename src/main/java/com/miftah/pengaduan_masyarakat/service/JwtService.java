@@ -15,8 +15,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.miftah.pengaduan_masyarakat.model.User;
+import com.miftah.pengaduan_masyarakat.repository.UserRepository;
+
 @Service
 public class JwtService {
+
+    private final UserRepository userRepository;
+
+    public JwtService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
 
@@ -38,14 +48,18 @@ public class JwtService {
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
 
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found."));
+
         String role = userDetails.getAuthorities().stream()
                 .map(auth -> auth.getAuthority())
                 .findFirst()
                 .orElse(null);
 
+        String subject = user.getId().toString();
         extraClaims.put("role", role);
 
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+        return buildToken(extraClaims, subject, jwtExpiration);
     }
 
     public long getExpirationTime() {
@@ -54,12 +68,12 @@ public class JwtService {
 
     private String buildToken(
             Map<String, Object> extraClaims,
-            UserDetails userDetails,
+            String subject,
             long expiration) {
         return Jwts
                 .builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())
+                .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey())
