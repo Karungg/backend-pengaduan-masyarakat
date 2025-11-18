@@ -96,6 +96,7 @@ public class AuthenticationService {
 
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("email", user.getEmail());
+        extraClaims.put("userId", user.getId());
 
         String jwtToken = jwtService.generateToken(extraClaims, user);
 
